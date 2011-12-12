@@ -1,0 +1,33 @@
+var components = [
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "string", params: []},
+	{url: "/images/drop-box-icon.png", name: "number", params: []},
+	{url: "/images/drop-box-icon.png", name: "bool", params: [{name: "values", type: "list", value: ["true", "false"]}] },
+	{url: "/images/drop-box-icon.png", name: "date", params: [{name: "date type", type: "list", value: ["date", "date+time"]}]} ,
+	{url: "/images/drop-box-icon.png", name: "quantity", params: [{name: "is only positive", type: "list", value: ["true", "false"] }, 
+								{name: "unit", type: "list", value: ["kg", "oz", "pound"] },
+								{name: "default value", type: "number", value: 10 },
+								{name: "prefix", type: "string", value: "something" }
+							   ]}
+];
+
+var tableParams = [
+  {name: "title", type: "string", value: "Untitled Table" },
+  {name: "Pluralized title", type: "string", value: "Tables" },
+  {name: "gender", type: "list", value: ["masculine", "feminine"] }
+];
+
+var relations = [
+  {name: "type", type: "relationship", value: ["1:1", "1:n", "n:n"] }
+]
