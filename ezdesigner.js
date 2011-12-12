@@ -109,13 +109,14 @@ var backgroundRect;
           }
         }
       });
-  
+
 //      $("#ezd-graph").draggable({        drag: function(){c(222)}      });
 
       $("#ezd-load").click(function(){
-        var jsontext = $("#ezd-json").val();
-        var obj = $.parseJSON(jsontext);
-        load(obj);
+	$.ajax({ type: 'POST', url: '/webapp/loadSchema', data: ({ id: $(this).attr('rel') }), success: load });
+        //var jsontext = $("#ezd-json").val();
+        //var obj = $.parseJSON(jsontext);
+        //load(obj);
       });
       $("#ezd-save").click(function(){
         var saveddata = {tables: [], relations: []};
@@ -125,10 +126,11 @@ var backgroundRect;
         for (var i = 0; i < gRelations.length; i++) {
           saveddata.relations.push(gRelations[i].toJSON());
         }
-        $("#ezd-json").html(JSON.stringify(saveddata, null, 2));
+	$.ajax({ type: 'POST', url: '/webapp/saveSchema', data: ({ id: $(this).attr('rel'), schema: JSON.stringify(saveddata, null, 2) }), success: function() { alert('Schéma sauvegardé avec succès'); } });
+        //$("#ezd-json").html(JSON.stringify(saveddata, null, 2));
       });
-      $("#ezd-json").html(JSON.stringify(loadjson, null, 2));
-
+      $.ajax({ type: 'POST', url: '/webapp/loadSchema', data: ({ id: $("#ezd-load").attr('rel') }), success: load });
+      //$("#ezd-json").html(JSON.stringify(loadjson, null, 2));
     });
 
 
@@ -149,7 +151,7 @@ var backgroundRect;
         for (var j = 0; j < json.relations[i].params.length; j++) {
           if (json.relations[i].params[j].type == "list" || json.relations[i].params[j].type == "relationship") 
             r.params[j].setValue(json.relations[i].params[j].selectedValue);
-          else 
+          else
             r.params[j].setValue(json.relations[i].params[j].value);
         }
       }
