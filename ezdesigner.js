@@ -16,6 +16,8 @@ var backgroundRect;
   var zoomfactor = 1.25;
   var zoom = 1;
 
+var interactivityMode = "normal"; // "relations"
+
 
     $(document).ready(function(){
       var guiheight = $("#ezd-gui").height();
@@ -36,6 +38,7 @@ var backgroundRect;
         },
         stop: function(){
           CalcMidPoint();
+          activeTable = null;
         }, 
 
       });
@@ -103,7 +106,7 @@ var backgroundRect;
   	            dialog.dialog("open");
   	            dialog.dialog("option", "title", "Add new component");
   	            dialog.dialog("option", "buttons", {OK: addComp, Cancel: function() {dialog.dialog("close")}});
-  	            dialog.append("<span>Component name: <input id='table-name'></span>");
+  	            dialog.append("<span>Component name: <input id='ezd-table-name'></span>");
               }
             }
           }
@@ -183,6 +186,12 @@ var backgroundRect;
     function buildComponents() {
       var t = $('<div class="todrop table">New Table</div>');
       $("#ezd-new-table").append(t);
+      var r = $('<div class="todrop ezd-relationship">New Relationship</div>');
+      $("#ezd-relationship").append(r);
+      r.click(function(){
+        r.toggleClass("active");
+        toggleMode();
+      });
 
       for (var i = 0; i < components.length; i++) {
         var t = $('<div class="todrop component" data-component="' + components[i].name + '"><img src="' + components[i].url + '" class="component-icon">' + components[i].name + '</div>');
@@ -190,7 +199,9 @@ var backgroundRect;
       }
     }
 
-
+    function toggleMode() {
+      interactivityMode = interactivityMode == "normal" ? "relations" : "normal";
+    }
 
 
 
