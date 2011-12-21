@@ -48,11 +48,17 @@ html,body {
 	z-index: 8;
 }
 
-#ezd-new-table {
-	width: 60px;
-	height: 60px;
+#ezd-new-table, #ezd-relationship {
+	width: 90px;
+	height: 40px;
+  margin-bottom: 20px;
 	float: left;
+}
+#ezd-relationship {
 	margin: 0px 10px;
+}
+.ezd-relationship.active {
+	outline: solid 2px black;
 }
 
 #ezd-components {
@@ -72,10 +78,10 @@ html,body {
 	margin: 0px 10px;
 }
 
-.table {
+.table, .ezd-relationship {
 	float: left;
 	background: grey;
-	width: 60px;
+	width: 90px;
 	height: 40px;
 	font-family: Arial;
 	font-size: 10px;

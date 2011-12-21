@@ -16,15 +16,29 @@ var Table = Class.extend({
     this.rect.attr("fill", Table._tableRectDefColour);
     this.rect.attr("stroke", Table._tableRectDefStrokeColour);
     this.rect.attr("stroke-width", Table._tableRectDefStrokeWidth);
-this.rect.onDragOver(this.dragOver)
 
     this.headerRect = canvas.rect(0, 5, Table._tableRectDefWidth-5, Table._tableRectDefHeight, 3);
     this.headerRect.attr("fill", Table._headerRectDefBackground);
     this.headerRect.attr("stroke", Table._headerRectDefStrokeColour);
     this.headerRect.attr("stroke-width", Table._headerRectDefStrokeWidth);
 
+    this.rect.click(function(){
+      if (interactivityMode == "relations" && !isdragging) {
+        if (typeof activeTable == "undefined" || activeTable == null) 
+          activeTable = this.parent;
+        else {
+          var r = new Relation(relations[0], this.parent, activeTable);
+          r.reposition();
+          r.repositionTexts();
+          activeTable = null;
+        }
+      }
+    });
+
     this.closeX = canvas.path("");
     this.closeX.attr({"stroke": Table._closeXStrokeColour, "stroke-width": Table._closeXStrokeWidth, "fill": "none"});
+    this.closeX.click(this.remove);
+    this.closeX.parent = this;
     
     this.text = canvas.text(Table._tableTextXOffset, Table._tableTextYOffset, this.getTitle());
     this.text.attr("fill", Table._tableTextDefColour);
@@ -46,6 +60,7 @@ this.rect.onDragOver(this.dragOver)
     }
     
     this.drag(this._drag, this._dragstart, this._dragstop);
+
     
     this.headerRect.dblclick(function(){
       var el = this.parent.getParamsElement();
@@ -72,6 +87,19 @@ this.rect.onDragOver(this.dragOver)
     this.rect.hover(this.hoverCursor, this.autoCursor)
     this.headerRect.hover(this.hoverCursor, this.autoCursor)
     this.text.hover(this.hoverCursor, this.autoCursor)
+  },
+  remove: function() {
+    this.parent.rect.remove();
+    this.parent.headerRect.remove();
+    this.parent.text.remove();
+    for (var i = 0; i < this.parent.texts.length; i++) {
+      this.parent.texts[i].remove();
+    }
+    for (var i = 0; i < this.parent.relations.length; i++) {
+      this.parent.relations[i].remove();
+    }
+    
+    this.remove();
   },
   hoverCursor: function(){this.attr("cursor", "pointer")},
   autoCursor: function(){this.attr("cursor", "auto")},
@@ -185,8 +213,6 @@ this.rect.onDragOver(this.dragOver)
     this.text.attr("x", x + 5 + 1 + Table._tableTextXOffset);
     this.text.attr("y", y + 5 + 1 + this.text.getBBox().height + Table._tableTextYOffset);
 
-
-    
     if (this.texts.length == 0) 
       return;
 
@@ -226,6 +252,8 @@ this.rect.onDragOver(this.dragOver)
     }
   },
   _dragstart: function(){
+    if (interactivityMode != "normal")
+      return;
     isdragging = true;
 
     // storing original coordinates
@@ -239,46 +267,21 @@ this.rect.onDragOver(this.dragOver)
     }
   },
   _drag: function(dx, dy){
+    if (!isdragging)
+      return;
     var scale = $("#ezd-slide").slider("value");
     // move will be called with dx and dy
     this.parent.setPosition( this.ox + dx*getZoom() , this.oy + dy*getZoom() - 10);
     for (var i = 0; i < this.parent.relations.length; i++) {
       this.parent.relations[i].reposition();
     }
-return;
-    var xx = arguments[2] - $("#ezd-graph").offset().left;
-    var yy = arguments[3] - $("#ezd-graph").offset().top;
-    for (var i = 0; i < tables.length; i++) {
-      if(tables[i] != this.parent && tables[i].contains(xx, yy)) {
-        tables[i].rect.attr({opacity: 0.5, fill: "red"});
-      }
-      else {
-        tables[i].rect.attr({opacity: 1, fill: "#dedede"});
-      }
-    }
   },
   _dragstop: function(){
+    if (!isdragging)
+      return;
     isdragging = false;
     for (var i = 0; i < this.parent.relations.length; i++) {
       this.parent.relations[i].repositionTexts();
-    }
-
-    var scale = $("#ezd-slide").slider("value");
-    var xx = event.clientX - $("#ezd-graph").offset().left;
-    var yy = event.clientY - $("#ezd-graph").offset().top;
-    for (var i = 0; i < tables.length; i++) {
-//      if(tables[i] != this.parent && tables[i].contains(xx/scale, yy/scale)) {
-      if(activetable) {
-        var r = new Relation(relations[0], this.parent, activetable);
-        this.parent.setPosition(this.ox, this.oy);
-        for (var i = 0; i < this.parent.relations.length; i++) {
-          this.parent.relations[i].reposition();
-          this.parent.relations[i].repositionTexts();
-        }
-        r.reposition();
-        r.repositionTexts();
-        return;
-      }
     }
   },
   scale: function (val) {
@@ -288,17 +291,7 @@ return;
     for (var i = 0; i < this.texts.length; i++) {
       this.texts[i].scale(val);
     }
-  },
-  dragOut: function(a) {
-    if (activetable == null) return;
-    activetable.rect.attr({opacity: 1, fill: "#dedede"});
-    activetable = null;
-  },
-  dragOver: function(a) {
-    if (a != a.parent.rect) return;
-    activetable = a.parent;
-    a.attr({opacity: 0.5, fill: "red"});
-  },
+  }
 });
 var activetable = null;
 

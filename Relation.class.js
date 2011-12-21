@@ -150,6 +150,21 @@ var Relation = Class.extend({
     this.srcText.show();
     this.dstText.show();
   },
+  remove: function() {
+    for (var i = 0; i < this.src.relations.length; i++) {
+      if (this == this.src.relations[i])
+        this.src.relations.splice(i);
+    }
+    for (var i = 0; i < this.dst.relations.length; i++) {
+      if (this == this.dst.relations[i])
+        this.dst.relations.splice(i);
+    }
+    this.srcTextBackground.remove();
+    this.dstTextBackground.remove();
+    this.srcText.remove();
+    this.dstText.remove();
+    this.line.remove();
+  },
   getElement: function() {
     return this.params[0].getElement();
   },
