@@ -1,20 +1,12 @@
 var components = [
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "string", params: []},
-	{url: "/images/drop-box-icon.png", name: "number", params: []},
-	{url: "/images/drop-box-icon.png", name: "bool", params: [{name: "values", type: "list", value: ["true", "false"]}] },
-	{url: "/images/drop-box-icon.png", name: "date", params: [{name: "date type", type: "list", value: ["date", "date+time"]}]} ,
+	{url: "/images/string.png", name: "string", params: []},
+	{url: "/images/boolean.png", name: "bool", params: [{name: "values", type: "list", value: ["true", "false"]}] },
+	{url: "/images/date.png", name: "date", params: [{name: "date type", type: "list", value: ["date", "date+time"]}]} ,
+	{url: "/images/time.png", name: "time", params: [{name: "date type", type: "list", value: ["date", "date+time"]}]} ,
+	{url: "/images/float.png", name: "float", params: []},
+	{url: "/images/text.png", name: "text", params: []},
+	{url: "/images/integer.png", name: "integer", params: []},
+	{url: "/images/image.png", name: "image", params: []},
 	{url: "/images/drop-box-icon.png", name: "quantity", params: [{name: "is only positive", type: "list", value: ["true", "false"] }, 
 								{name: "unit", type: "list", value: ["kg", "oz", "pound"] },
 								{name: "default value", type: "number", value: 10 },
@@ -29,5 +21,5 @@ var tableParams = [
 ];
 
 var relations = [
-  {name: "type", type: "relationship", value: ["1:1", "1:n", "n:n"] }
+  {name: "type", type: "relationship", value: ["1:1", "1:n", "n:1", "n:n"] }
 ]

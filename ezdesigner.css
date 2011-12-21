@@ -34,9 +34,9 @@ html,body {
 }
 
 #ezd-graph {
-  width: 100%;
-  height: 100%;
-	background: yellow;
+	width: 100%;
+	height: 100%;
+	//background: yellow;
 	position: absolute;
 	left: 0px;
 	top: 0px;
@@ -64,7 +64,7 @@ html,body {
 }
 
 #ezd-components>div {
-	
+
 }
 
 #ezd-buttons {
@@ -84,7 +84,7 @@ html,body {
 
 .component {
 	float: left;
-	background: orange;
+	//background: orange;
 	width: 60px;
 	height: 40px;
 	font-family: Arial;
@@ -93,6 +93,6 @@ html,body {
 }
 
 .component-icon {
-	width: 20px;
-	height: 20px;
+	width: 32px;
+	height: 32px;
 }
