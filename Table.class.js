@@ -22,18 +22,25 @@ var Table = Class.extend({
     this.headerRect.attr("stroke", Table._headerRectDefStrokeColour);
     this.headerRect.attr("stroke-width", Table._headerRectDefStrokeWidth);
 
-    this.rect.click(function(){
+
+    var clickInRelationshipMode = function(table){
       if (interactivityMode == "relations" && !isdragging) {
-        if (typeof activeTable == "undefined" || activeTable == null) 
-          activeTable = this.parent;
+        if (typeof activeTable == "undefined" || activeTable == null) {
+          activeTable = table;
+          activeTable.rect.attr("stroke-width", 3);
+        }
         else {
-          var r = new Relation(relations[0], this.parent, activeTable);
+          var r = new Relation(relations[0], table, activeTable);
+          toggleMode();
           r.reposition();
           r.repositionTexts();
           activeTable = null;
         }
       }
-    });
+    };
+
+    this.rect.click(function(){clickInRelationshipMode(this.parent)});
+    this.headerRect.click(function(){clickInRelationshipMode(this.parent)});
 
     this.closeX = canvas.path("");
     this.closeX.attr({"stroke": Table._closeXStrokeColour, "stroke-width": Table._closeXStrokeWidth, "fill": "none"});
@@ -61,28 +68,33 @@ var Table = Class.extend({
     
     this.drag(this._drag, this._dragstart, this._dragstop);
 
+
+    var generatePropertiesDialog = function(table) {
+      var el = table.getParamsElement();
+      dialog.empty();
+      dialog.dialog("option", "title", "Table params");
+      dialog.dialog("option", "buttons", {OK: function(){dialog.dialog("close")}, Cancel: function() {
+        var id = dialog.data("id");
+        var params = dialog.data("params");
+        var table = getTable(id);
+        for (var i = 0; i < table.params.length; i++) {
+          table.params[i].setValue(params[i].value);
+        }
+        dialog.dialog("close");
+      }});
+      dialog.append(el);
+      dialog.dialog("open");
+      var params = [];
+      for (var i = 0; i < table.params.length; i++) {
+        params.push(table.params[i].toJSON());
+      }
+      dialog.data("params", params);
+      dialog.data("id", table.__id__);
+    }
     
-    this.headerRect.dblclick(function(){
-      var el = this.parent.getParamsElement();
-      dialog.empty();
-      dialog.dialog("option", "title", "Table params");
-      dialog.append(el);
-      dialog.dialog("open");
-    });
-    this.rect.dblclick(function(){
-      var el = this.parent.getParamsElement();
-      dialog.empty();
-      dialog.dialog("option", "title", "Table params");
-      dialog.append(el);
-      dialog.dialog("open");
-    });
-    this.text.dblclick(function(){
-      var el = this.parent.getParamsElement();
-      dialog.empty();
-      dialog.dialog("option", "title", "Table params");
-      dialog.append(el);
-      dialog.dialog("open");
-    });
+    this.headerRect.dblclick(function(){generatePropertiesDialog(this.parent)});
+    this.rect.dblclick(function(){generatePropertiesDialog(this.parent)});
+    this.text.dblclick(function(){generatePropertiesDialog(this.parent)});
     
     this.rect.hover(this.hoverCursor, this.autoCursor)
     this.headerRect.hover(this.hoverCursor, this.autoCursor)
@@ -101,8 +113,19 @@ var Table = Class.extend({
     
     this.remove();
   },
-  hoverCursor: function(){this.attr("cursor", "pointer")},
-  autoCursor: function(){this.attr("cursor", "auto")},
+  hoverCursor: function(){
+    this.attr("cursor", "pointer");
+    if (interactivityMode == "relations" && (activeTable != null || typeof activeTable != "undefined")) {
+      this.parent.rect.attr("stroke-width", 3);
+    }
+  },
+  autoCursor: function(){
+    this.attr("cursor", "auto");
+    if (interactivityMode == "relations" && (activeTable != null || typeof activeTable != "undefined")) {
+      this.parent.rect.attr("stroke-width", 1);
+      activeTable.rect.attr("stroke-width", 3);
+    }
+  },
   toJSON: function(){
     var obj = {};
     obj.id = this.__id__;
@@ -182,6 +205,7 @@ var Table = Class.extend({
 	
 	    dialog.empty();
 	    dialog.dialog("option", "title", "Component params: " + this.component.title);
+	    dialog.dialog("option", "buttons", {});
 	    dialog.append(el);
 	    dialog.dialog("open");
     });

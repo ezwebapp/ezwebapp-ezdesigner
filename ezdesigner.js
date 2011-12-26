@@ -10,11 +10,11 @@ var canvasHeight = 10000;
 var vbx = vby = 0;
 var backgroundRect;
 
-  var orig_x,orig_y,orig_width,orig_height;
-  var curorig_x,curorig_y,curorig_width,curorig_height;
-  var midx, midy;
-  var zoomfactor = 1.25;
-  var zoom = 1;
+var orig_x,orig_y,orig_width,orig_height;
+var curorig_x,curorig_y,curorig_width,curorig_height;
+var midx, midy;
+var zoomfactor = 1.25;
+var zoom = 1;
 
 var interactivityMode = "normal"; // "relations"
 
@@ -50,7 +50,17 @@ var interactivityMode = "normal"; // "relations"
       });
 
       dialog = $("#ezd-dialog");
+      dialog.keyup(function(e){c(e.keyCode)
+        if (e.keyCode == 13) {
+          $(this).closest(".ui-dialog").find("button").each(function(){
+            if($(this).find(".ui-button-text").html() == "OK") {
+              $(this).click();
+            }
+          });
+        }
+      });
       $("#ezd-dialog").dialog();
+      dialog.dialog("option", "buttons", {OK: addComp, Cancel: function() {dialog.dialog("close")}});
       $("#ezd-dialog").dialog("close");
 
       buildComponents();
@@ -113,7 +123,6 @@ var interactivityMode = "normal"; // "relations"
         }
       });
 
-//      $("#ezd-graph").draggable({        drag: function(){c(222)}      });
 
       $("#ezd-load").click(function(){
 	$.ajax({ type: 'POST', url: '/webapp/loadSchema', data: ({ id: $(this).attr('rel') }), success: load });
@@ -172,7 +181,6 @@ var interactivityMode = "normal"; // "relations"
       activeTable = null;
       activeComp = null;
       dialog.dialog("close");
-      dialog.dialog("option", "buttons", {});
     }
 
     function getComponentDescription(name) {
@@ -189,7 +197,6 @@ var interactivityMode = "normal"; // "relations"
       var r = $('<div class="todrop ezd-relationship">New Relationship</div>');
       $("#ezd-relationship").append(r);
       r.click(function(){
-        r.toggleClass("active");
         toggleMode();
       });
 
@@ -201,9 +208,11 @@ var interactivityMode = "normal"; // "relations"
 
     function toggleMode() {
       interactivityMode = interactivityMode == "normal" ? "relations" : "normal";
+      $("#ezd-relationship .ezd-relationship").toggleClass("active");
+      for (var i = 0; i < tables.length; i++) {
+        tables[i].rect.attr("stroke-width", Table._tableRectDefStrokeWidth);
+      }
     }
-
-
 
 
 

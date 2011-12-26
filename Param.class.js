@@ -48,6 +48,7 @@ var StringParam = Param.extend({
         obj.setValue($(this).val());
       });
     }
+    this.el.find("input").val(this.getValue());
     return this.el;
   },
   getType: function(){ return "string"; }
@@ -68,6 +69,7 @@ var NumberParam = Param.extend({
         obj.setValue($(this).val());
       });
     }
+    this.el.find("input").val(this.getValue());
     return this.el;
   },
   getType: function(){ return "number"; }
@@ -79,7 +81,7 @@ var ListParam = Param.extend({
     this.__class__ = "ListParam";
   },
   getElement: function() {
-    if (this.el == null) { 
+    //if (this.el == null) { 
   	  var s = $("<div><b>Param</b> " + this.desc.name + "<select></select></div>");
       s.attr("id", this.__id__);
   	  for (var i = 0; i < this.desc.value.length; i++) {
@@ -90,7 +92,7 @@ var ListParam = Param.extend({
         var obj =  __objects[id];
       });
       this.el = s;
-    }
+    //}
   	return this.el;
   },
   setValue: function(val) {
