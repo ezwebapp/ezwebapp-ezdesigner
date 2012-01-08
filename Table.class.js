@@ -11,7 +11,7 @@ var Table = Class.extend({
       this.table.text.attr("text", val);
     }
     tables.push(this);
-    
+    this.helper = canvas.rect(0,0,1,1).attr("fill", "grey").attr("opacity", 0.8).hide();
     this.rect = canvas.rect(Table._tableRectXOffset, Table._tableRectYOffset, Table._tableRectDefWidth, Table._tableRectDefHeight);
     this.rect.attr("fill", Table._tableRectDefColour);
     this.rect.attr("stroke", Table._tableRectDefStrokeColour);
@@ -83,6 +83,8 @@ var Table = Class.extend({
         dialog.dialog("close");
       }});
       dialog.append(el);
+      dialog.find("input").eq(0).focus();
+
       dialog.dialog("open");
       var params = [];
       for (var i = 0; i < table.params.length; i++) {
@@ -109,9 +111,11 @@ var Table = Class.extend({
     }
     for (var i = 0; i < this.parent.relations.length; i++) {
       this.parent.relations[i].remove();
+      gRelations.splice(gRelations.indexOf(this.parent.relations[i], 1));
     }
     
     this.remove();
+    tables.splice(tables.indexOf(this), 1);
   },
   hoverCursor: function(){
     this.attr("cursor", "pointer");
@@ -167,7 +171,7 @@ var Table = Class.extend({
     var titlebbox = this.text.getBBox();
     
     var text = canvas.text(
-        this.rect.attr("x") + Table._componentXOffset, 
+        this.rect.attr("x") + Table._componentXOffset*2, 
         0, name + " : " + component.getName() );
     text.attr("fill", Table._componentDefColour);
     text.attr("font-family", Table._componentDefFontFamily);
@@ -178,9 +182,80 @@ var Table = Class.extend({
     var bbox = this.texts[this.texts.length-1].getBBox();
     var y = titlebbox.y + titlebbox.height  + this.texts.length * bbox.height;
     text.attr("y", y);
-
+    var close = canvas.text(text.attr("x")-7, text.attr("y"), "x").attr("font-size", Table._componentDefFontSize-3);
+    // double reference, attention when removing
+    close.text = text;
+    text.close = close;
+    close.hover(
+      function() {
+        this.attr("cursor", "pointer");
+        this.attr("font-size", Table._componentDefFontSize*1.2);
+        this.attr("font-weight", "bold");
+        this.attr("fill", Table._headerRectDefBackground);
+      },
+      function() {
+        this.attr("cursor", "auto"); 
+        this.attr("font-size", Table._componentDefFontSize);
+        this.attr("font-weight", "normal");
+        this.attr("fill", "black");
+      }
+    );
+    close.click(function(){
+      var table = this.text.parent;
+      table.texts.splice(table.texts.indexOf(this.text), 1);
+      table.resizeToComp(text);
+      this.text.remove();
+      this.text.close = null;
+      delete this.text;
+      this.remove();
+    });
     
-    var hh = Table._componentYOffset + bbox.height * this.texts.length + titlebbox.height + Table._tableTextYOffset;
+    text.component = component;
+    text.parent = this;
+    
+    text.click(function(){
+      activeComp = this.component;
+	    var el = this.component.getElement();
+	
+	    dialog.empty();
+	    dialog.dialog("option", "title", "Component params: " + this.component.title);
+	    dialog.dialog("option", "buttons", {});
+      dialog.dialog("option", "buttons", {OK: function(){dialog.dialog("close")}, Cancel: function() {
+        var id = dialog.data("id");
+        var params = dialog.data("params");
+        for (var i = 0; i < activeComp.params.length; i++) {
+c(params[i].selectedValue)
+          if(params[i].type == "list")
+            activeComp.params[i].setValue(params[i].selectedValue);
+          else
+            activeComp.params[i].setValue(params[i].value);
+        }
+        dialog.dialog("close");
+      }});
+	    dialog.append(el);
+      dialog.find("input").eq(0).focus();
+
+      var params = [];
+      for (var i = 0; i < activeComp.params.length; i++) {
+        params.push(activeComp.params[i].toJSON());
+      }
+      dialog.data("params", params);
+      dialog.data("id", activeComp.__id__);
+
+	    dialog.dialog("open");
+    });
+    text.hover(this.hoverCursor, this.autoCursor)
+    
+    this.resizeToComp(text);
+  },
+  resizeToComp: function(text) {
+    if(this.texts.length == 0) 
+      var bbox = {width: 0, height: 0};
+    else
+      var bbox = this.texts[this.texts.length-1].getBBox();
+
+    var titlebbox = this.text.getBBox();
+    var hh = Table._componentYOffset + bbox.height * this.texts.length + titlebbox.height + Table._tableTextYOffset*3;
     if (hh < Table._tableRectDefHeight)
       hh = Table._tableRectDefHeight;
     this.rect.attr("height", hh);
@@ -194,27 +269,25 @@ var Table = Class.extend({
       this.headerRect.attr("width", this.rect.getBBox().width - 10);
     }
 
-    this.positionCloseX();
-    
-    text.component = component;
-    text.parent = this;
-    
-    text.click(function(){
-      activeComp = this.component;
-	    var el = this.component.getElement();
-	
-	    dialog.empty();
-	    dialog.dialog("option", "title", "Component params: " + this.component.title);
-	    dialog.dialog("option", "buttons", {});
-	    dialog.append(el);
-	    dialog.dialog("open");
-    });
-    text.hover(this.hoverCursor, this.autoCursor)
+    this.positionCloseX();  
+
+    if (this.texts.length == 0) 
+      return;
+
+    var titlebbox = this.text.getBBox();
+    var bbox = this.texts[this.texts.length-1].getBBox();
+    var y = titlebbox.y + titlebbox.height ;
+    for (var i = 0; i < this.texts.length; i++) {
+      this.texts[i].attr("x", this.rect.attr("x") + Table._componentXOffset*2);
+      y +=  bbox.height ; 
+      this.texts[i].attr("y", y);
+      this.texts[i].close.attr({x: this.texts[i].attr("x")-7, y: this.texts[i].attr("y") })
+    }
     
     for (var i = 0; i < this.relations.length; i++) {
       this.relations[i].reposition();
     }
-    
+
   },
   positionCloseX: function() {
     var cx = this.headerRect.attr("x") + this.headerRect.attr("width") - 15;
@@ -244,9 +317,10 @@ var Table = Class.extend({
     var bbox = this.texts[this.texts.length-1].getBBox();
     var y = titlebbox.y + titlebbox.height ;
     for (var i = 0; i < this.texts.length; i++) {
-      this.texts[i].attr("x", this.rect.attr("x") + Table._componentXOffset);
+      this.texts[i].attr("x", this.rect.attr("x") + Table._componentXOffset*2);
       y +=  bbox.height ; 
       this.texts[i].attr("y", y);
+      this.texts[i].close.attr({x: this.texts[i].attr("x")-7, y: this.texts[i].attr("y") })
     }
   },
   dblclick: function(f1){
@@ -289,22 +363,41 @@ var Table = Class.extend({
       this.parent.relations[i].srcText.hide();
       this.parent.relations[i].dstText.hide();
     }
+
+    if (this == this.parent.headerRect) {
+      this.ox -= 5;
+      this.oy -= 5;
+    }
+    if (this == this.parent.text) {
+      this.ox -= Table._tableTextXOffset + 6;
+      this.oy -= Table._tableTextYOffset + 14;
+    }
+    this.parent.helper.attr({x: this.ox, y: this.oy});
+    this.parent.helper.attr({width: this.parent.rect.attr("width"), height: this.parent.rect.attr("height")});
   },
   _drag: function(dx, dy){
     if (!isdragging)
       return;
-    var scale = $("#ezd-slide").slider("value");
+    this.parent.rect.attr("stroke-width", 3);
+    this.parent.helper.show().toFront();
     // move will be called with dx and dy
-    this.parent.setPosition( this.ox + dx*getZoom() , this.oy + dy*getZoom() - 10);
+    xx = this.ox + dx*getZoom();
+    yy = this.oy + dy*getZoom();
+    this.parent.helper.attr({x: xx, y: yy});
+    //this.parent.setPosition(xx, yy);
     for (var i = 0; i < this.parent.relations.length; i++) {
-      this.parent.relations[i].reposition();
+      //this.parent.relations[i].reposition();
     }
   },
-  _dragstop: function(){
+  _dragstop: function(e){
     if (!isdragging)
       return;
+    this.parent.helper.hide();
+    this.parent.setPosition(this.parent.helper.attr("x"), this.parent.helper.attr("y") - 10);
+    this.parent.rect.attr("stroke-width", 1);
     isdragging = false;
     for (var i = 0; i < this.parent.relations.length; i++) {
+      this.parent.relations[i].reposition();
       this.parent.relations[i].repositionTexts();
     }
   },

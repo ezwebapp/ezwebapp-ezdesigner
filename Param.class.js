@@ -24,6 +24,7 @@ var Param = Class.extend({
   },
   setValue: function(value) {
     this.desc.value = value;
+    this.getElement().val(value);
   },
   getElement: function() {
     return $("<input>");
@@ -79,6 +80,7 @@ var ListParam = Param.extend({
   init: function(paramDescription) {
     this._super(paramDescription);
     this.__class__ = "ListParam";
+    this.val = this.desc.value[0];
   },
   getElement: function() {
     //if (this.el == null) { 
@@ -96,15 +98,21 @@ var ListParam = Param.extend({
   	return this.el;
   },
   setValue: function(val) {
+    this.val = val;
     var el = this.getElement();
     if (typeof this.desc.value == "string")
       var ind = this.desc.value.indexOf(val);
     else
       var ind = 0;
+    var options = el.find("select").find("option");
+    for (var i = 0; i < options.length; i++) {
+      if ($(options[i]).html() == val)
+        ind = i;
+    }
     el.find("select").find("option").eq(ind).attr("selected", "true");
   },
   getValue: function() {
-    return $(this.getElement()).find("select").val();
+    return this.val;//$(this.getElement()).find("select").val();
   },
   getType: function(){ return "list"; },
   toJSON: function() {
@@ -113,30 +121,50 @@ var ListParam = Param.extend({
 
 });
 
-var RelationshipParam = ListParam.extend({
+var RelationshipParam = Param.extend({
   init: function(paramDescription) {
     this._super(paramDescription);
     this.__class__ = "RelationshipParam";
+    this.val = this.desc.value[0];
   },
-  getElement: function() {
-      if (this.el != null)
-        return this.el;
-      this._super();
-      this.el.find("select").change(function(){
-        var id = $(this).closest("div").attr("id");
-        var obj =  __objects[id];
-        obj.relation.srcText.attr("text", obj.getSrcText());
-        obj.relation.dstText.attr("text", obj.getDstText());
-      });
-      return this.el;
+  getElement: function() {  
+	  var s = $("<div><b>Param</b> " + this.desc.name + "<select></select></div>");
+    s.attr("id", this.__id__);
+	  for (var i = 0; i < this.desc.value.length; i++) {
+		  s.find("select").append($("<option>" + this.desc.value[i] + "</option>"));
+	  }
+    this.el = s;
+    this.el.find("select").change(function(){
+      var id = $(this).closest("div").attr("id");
+      var obj =  __objects[id];
+      obj.relation.params[0].setValue($(this).val());
+    });
+    var options = this.el.find("select").find("option");
+    for (var i = 0; i < options.length; i++) {
+      if ($(options[i]).html() == this.val)
+        ind = i;
+    }
+    this.el.find("select").find("option").eq(ind).attr("selected", "true");
+    return this.el;
   },
   setValue: function(val) {
+    this.val = val;
     var el = this.getElement();
     if (typeof this.desc.value == "string")
       var ind = this.desc.value.indexOf(val);
     else
       var ind = 0;
+    var options = el.find("select").find("option");
+    for (var i = 0; i < options.length; i++) {
+      if ($(options[i]).html() == val)
+        ind = i;
+    }
     el.find("select").find("option").eq(ind).attr("selected", "true");
+    var id = el.closest("div").attr("id");
+    var obj =  __objects[id];
+    obj.relation.srcText.attr("text", obj.getSrcText());
+    obj.relation.dstText.attr("text", obj.getDstText());
+
   },
   getSrcText: function() {
     if (this.getValue() == "1:1") {
@@ -144,6 +172,9 @@ var RelationshipParam = ListParam.extend({
     }
     else if (this.getValue() == "1:n") {
       return "1";
+    }
+    else if (this.getValue() == "n:1") {
+      return "n";
     }
     else if (this.getValue() == "n:n") {
       return "n";
@@ -156,10 +187,21 @@ var RelationshipParam = ListParam.extend({
     else if (this.getValue() == "1:n") {
       return "n";
     }
+    else if (this.getValue() == "n:1") {
+      return "1";
+    }
     else if (this.getValue() == "n:n") {
       return "n";
     }
+  },
+  getValue: function() {
+    return this.val;// $(this.getElement()).find("select").val();
+  },
+  getType: function(){ return "list"; },
+  toJSON: function() {
+    return {name: this.getName(), type: this.getType(), selectedValue: this.getValue(), value: this.desc.value};
   }
+
 });
 
 function PF(paramDescription, params) {

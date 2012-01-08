@@ -54,31 +54,50 @@ var Relation = Class.extend({
       this.parent.dstText.attr("font-weight", Relation._dstFontWeightHover);
       this.parent.dstText.attr("color", Relation._dstFontColourHover);
       
-    }, 
-    function() {
-      this.attr({"stroke-width": Relation._lineStrokeWidth});
-      this.attr({"stroke": Relation._lineStroke});
-      
-      this.parent.srcTextBackground.attr("fill", Relation._srcBackground);
-      this.parent.srcTextBackground.attr("stroke-width", Relation._srcStrokeWidth);
-      this.parent.srcText.attr("font-family", Relation._srcFontFamily);
-      this.parent.srcText.attr("font-size", Relation._srcFontSize);
-      this.parent.srcText.attr("font-weight", Relation._srcFontWeight);
-      this.parent.srcText.attr("color", Relation._srcFontColour);
-      
-      this.parent.dstTextBackground.attr("fill", Relation._dstBackground);
-      this.parent.dstTextBackground.attr("stroke-width", Relation._dstStrokeWidth);
-      this.parent.dstText.attr("font-family", Relation._dstFontFamily);
-      this.parent.dstText.attr("font-size", Relation._dstFontSize);
-      this.parent.dstText.attr("font-weight", Relation._dstFontWeight);
-      this.parent.dstText.attr("color", Relation._dstFontColour);
+      }, 
+      function() {
+        this.attr({"stroke-width": Relation._lineStrokeWidth});
+        this.attr({"stroke": Relation._lineStroke});
+        
+        this.parent.srcTextBackground.attr("fill", Relation._srcBackground);
+        this.parent.srcTextBackground.attr("stroke-width", Relation._srcStrokeWidth);
+        this.parent.srcText.attr("font-family", Relation._srcFontFamily);
+        this.parent.srcText.attr("font-size", Relation._srcFontSize);
+        this.parent.srcText.attr("font-weight", Relation._srcFontWeight);
+        this.parent.srcText.attr("color", Relation._srcFontColour);
+        
+        this.parent.dstTextBackground.attr("fill", Relation._dstBackground);
+        this.parent.dstTextBackground.attr("stroke-width", Relation._dstStrokeWidth);
+        this.parent.dstText.attr("font-family", Relation._dstFontFamily);
+        this.parent.dstText.attr("font-size", Relation._dstFontSize);
+        this.parent.dstText.attr("font-weight", Relation._dstFontWeight);
+        this.parent.dstText.attr("color", Relation._dstFontColour);
     });
     this.line.click(function(){
+      var relation = this.parent;
       var el = this.parent.getElement();
       dialog.empty();
       dialog.dialog("option", "title", "Table params");
+      dialog.dialog("option", "buttons", {OK: function(){dialog.dialog("close")}, Cancel: function() {
+        var id = dialog.data("id");
+        var params = dialog.data("params");
+        var relation = getRelation(id);
+        for (var i = 0; i < relation.params.length; i++) {
+          relation.params[i].setValue(params[i].selectedValue);
+        }
+        dialog.dialog("close");
+      }});
+
       dialog.append(el);
+      dialog.find("input").eq(0).focus();
       dialog.dialog("open");
+      var params = [];
+      for (var i = 0; i < relation.params.length; i++) {
+        params.push(relation.params[i].toJSON());
+      }
+      dialog.data("params", params);
+      dialog.data("id", this.parent.__id__);
+
     });
   },
   reposition: function() {

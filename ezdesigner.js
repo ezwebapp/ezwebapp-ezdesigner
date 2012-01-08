@@ -45,12 +45,12 @@ var interactivityMode = "normal"; // "relations"
 
       $("#ezd-graph").bind("mousewheel", function(event){
         event.preventDefault();
-        var delta = event.wheelDelta > 0 ? 1 : -1;
+        var delta = event.originalEvent.wheelDelta > 0 ? 1 : -1;
         if (delta == 1) ZoomIn(); else ZoomOut();
       });
 
       dialog = $("#ezd-dialog");
-      dialog.keyup(function(e){c(e.keyCode)
+      dialog.keyup(function(e){
         if (e.keyCode == 13) {
           $(this).closest(".ui-dialog").find("button").each(function(){
             if($(this).find(".ui-button-text").html() == "OK") {
@@ -96,8 +96,8 @@ var interactivityMode = "normal"; // "relations"
       });
       $("#ezd-graph-container").droppable({
         drop: function(event, ui) {
-          var xx = (event.pageX - $("#ezd-graph").offset().left)*getZoom() + curorig_x;
-          var yy = (event.pageY - $("#ezd-graph").offset().top)*getZoom() + curorig_y;
+          var xx = (event.originalEvent.pageX - $("#ezd-graph").offset().left)*getZoom() + curorig_x;
+          var yy = (event.originalEvent.pageY - $("#ezd-graph").offset().top)*getZoom() + curorig_y;
           if (ui.draggable.hasClass("table")) {
             var t = new Table(canvas);
             t.setPosition(xx, yy);
@@ -117,6 +117,8 @@ var interactivityMode = "normal"; // "relations"
   	            dialog.dialog("option", "title", "Add new component");
   	            dialog.dialog("option", "buttons", {OK: addComp, Cancel: function() {dialog.dialog("close")}});
   	            dialog.append("<span>Component name: <input id='ezd-table-name'></span>");
+                dialog.find("input").eq(0).focus();
+
               }
             }
           }
@@ -173,6 +175,12 @@ var interactivityMode = "normal"; // "relations"
       for (var i = 0; i < tables.length; i++) {
         if (tables[i].__id__ == id)
           return tables[i];
+      }
+    }
+    function getRelation(id) {
+      for (var i = 0; i < gRelations.length; i++) {
+        if (gRelations[i].__id__ == id)
+          return gRelations[i];
       }
     }
 
