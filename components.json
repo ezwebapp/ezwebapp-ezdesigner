@@ -1,28 +1,58 @@
 var components = [
-	{url: "/images/string.png", name: "string", params: []},
-	{url: "/images/boolean.png", name: "bool", params: [{name: "values", type: "list", value: ["true", "false"]}] },
-	{url: "/images/date.png", name: "date", params: [{name: "date type", type: "list", value: ["date", "date+time"]}]},
-	{url: "/images/time.png", name: "time", params: [{name: "date type", type: "list", value: ["date", "date+time"]}]},
-	{url: "/images/float.png", name: "float", params: []},
-	{url: "/images/text.png", name: "text", params: []},
-	{url: "/images/integer.png", name: "integer", params: []},
-	{url: "/images/image.png", name: "image", params: []},
-	{url: "/images/drop-box-icon.png", name: "number", params: []},
-	{url: "/images/drop-box-icon.png", name: "bool", params: [{name: "values", type: "list", value: ["true", "false"]}] },
-	{url: "/images/drop-box-icon.png", name: "date", params: [{name: "date type", type: "list", value: ["date", "date+time"]}]} ,
-	{url: "/images/drop-box-icon.png", name: "quantity", params: [{name: "is only positive", type: "list", value: ["true", "false"] }, 
-								{name: "unit", type: "list", value: ["kg", "oz", "pound"] },
-								{name: "default value", type: "number", value: 10 },
-								{name: "prefix", type: "string", value: "something" }
-							   ]}
+	{ url: "/images/string.png", name: "string", params: [
+		{ name: "isName", type: "list", value: ["true", "false"] },
+		{ name: "nameOrder", type: "number", value: 1 },
+		{ name: "isUnique", type: "list", value: ["true", "false"] }
+	] },
+	{ url: "/images/boolean.png", name: "bool", params: [
+		{ name: "values", type: "list", value: ["true", "false"] }
+	] },
+	{ url: "/images/date.png", name: "date", params: [
+		{ name: "isName", type: "list", value: ["true", "false"] },
+		{ name: "nameOrder", type: "number", value: 1 },
+		{ name: "date type", type: "list", value: ["date", "date+time"] }
+	] },
+	{ url: "/images/time.png", name: "time", params: [
+		{ name: "isName", type: "list", value: ["true", "false"] },
+		{ name: "nameOrder", type: "number", value: 1 },
+		{ name: "time type", type: "list", value: ["time", "date+time"] }
+	] },
+	{ url: "/images/float.png", name: "float", params: [
+		{ name: "isName", type: "list", value: ["true", "false"] },
+		{ name: "nameOrder", type: "number", value: 1 }
+	] },
+	{ url: "/images/text.png", name: "text", params: [
+		{ name: "isName", type: "list", value: ["true", "false"] },
+		{ name: "nameOrder", type: "number", value: 1 },
+		{ name: "isUnique", type: "list", value: ["true", "false"] }
+	] },
+	{ url: "/images/integer.png", name: "integer", params: [
+		{ name: "isName", type: "list", value: ["true", "false"] },
+		{ name: "nameOrder", type: "number", value: 1 },
+		{ name: "isUnique", type: "list", value: ["true", "false"] }
+	] },
+	{ url: "/images/image.png", name: "image", params: [
+	] },
+	{ url: "/images/currency.png", name: "currency", params: [
+		{ name: "isName", type: "list", value: ["true", "false"] },
+		{ name: "nameOrder", type: "number", value: 1 }
+	] },
+	{ url: "/images/choice.png", name: "choice", params: [
+		{ name: "isName", type: "list", value: ["true", "false"] },
+		{ name: "nameOrder", type: "number", value: 1 },
+		{ name: "values", type: "string", value: "Enter choices separated by commas"}
+	] },
+	/*{ url: "/images/drop-box-icon.png", name: "quantity", params: [{ name: "is only positive", type: "list", value: ["true", "false"] }, 
+								{ name: "unit", type: "list", value: ["kg", "oz", "pound"] },
+								{ name: "default value", type: "number", value: 10 },
+								{ name: "prefix", type: "string", value: "something" }
+							   ] }*/
 ];
 
 var tableParams = [
-  {name: "title", type: "string", value: "Untitled Table" },
-  {name: "Pluralized title", type: "string", value: "Tables" },
-  {name: "gender", type: "list", value: ["masculine", "feminine"] }
+  { name: "Title", type: "string", value: "Untitled Table" },
+  { name: "Pluralized title", type: "string", value: "Tables" },
+  { name: "nameSeparator", type: "string", value: " " }
 ];
 
-var relations = [
-  {name: "type", type: "relationship", value: ["1:1", "1:n", "n:1", "n:n"] }
-]
+var relations = [{ name: "type", type: "relationship", value: ["1:1", "1:n", "n:1", "n:n"] }]

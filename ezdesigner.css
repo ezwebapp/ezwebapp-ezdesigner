@@ -49,7 +49,7 @@ html,body {
 }
 
 #ezd-new-table, #ezd-relationship {
-	width: 90px;
+	width: 50px;
 	height: 40px;
   margin-bottom: 20px;
 	float: left;
@@ -80,7 +80,6 @@ html,body {
 
 .table, .ezd-relationship {
 	float: left;
-	background: grey;
 	width: 90px;
 	height: 40px;
 	font-family: Arial;
@@ -90,15 +89,32 @@ html,body {
 
 .component {
 	float: left;
-	//background: orange;
-	width: 60px;
-	height: 40px;
+	width: 50px;
+	height: 50px;
 	font-family: Arial;
 	font-size: 10px;
-	margin: 3px;
+	margin-left: 5px;
+	//background-color: #eee;
+	border-width: 1px;
+	border-color: #ddd;
+	border-style: solid;
 }
 
 .component-icon {
 	width: 32px;
 	height: 32px;
+	margin: 3px 9px 3px 9px;
+}
+
+.component span {
+	display: block;
+	position: relative;
+	top: -5px;
+	color: #000;
+	white-space: nowrap;
+	width: 44px;
+	height: 20px;
+	margin: 0px 3px 3px 3px;
+	text-align: center;
+	overflow: hidden;
 }

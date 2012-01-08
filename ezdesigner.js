@@ -192,16 +192,16 @@ var interactivityMode = "normal"; // "relations"
     }
 
     function buildComponents() {
-      var t = $('<div class="todrop table">New Table</div>');
+      var t = $('<div class="todrop table component"><img src="/images/table.png" class="component-icon" /><span>New table</span></div>');
       $("#ezd-new-table").append(t);
-      var r = $('<div class="todrop ezd-relationship">New Relationship</div>');
+      var r = $('<div class="todrop ezd-relationship component"><img src="/images/relation.png" class="component-icon" /><span>New relation</span></div>');
       $("#ezd-relationship").append(r);
       r.click(function(){
         toggleMode();
       });
 
       for (var i = 0; i < components.length; i++) {
-        var t = $('<div class="todrop component" data-component="' + components[i].name + '"><img src="' + components[i].url + '" class="component-icon">' + components[i].name + '</div>');
+        var t = $('<div class="todrop component" data-component="' + components[i].name + '"><img src="' + components[i].url + '" class="component-icon"><span>' + components[i].name + '</span></div>');
         $("#ezd-components > div").append(t);
       }
     }
