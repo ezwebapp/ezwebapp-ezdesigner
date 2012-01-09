@@ -1,3 +1,21 @@
+/*
+ * EZDesigner - A jQuery & Raphael database designer for EZWebapp
+ * Copyright (C) 2011-2012  EZWebapp.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 var Table = Class.extend({
   init: function(canvas) {
     this.__class__ = "Table";
@@ -46,7 +64,7 @@ var Table = Class.extend({
     this.closeX.attr({"stroke": Table._closeXStrokeColour, "stroke-width": Table._closeXStrokeWidth, "fill": "none"});
     this.closeX.click(this.remove);
     this.closeX.parent = this;
-    
+
     this.text = canvas.text(Table._tableTextXOffset, Table._tableTextYOffset, this.getTitle());
     this.text.attr("fill", Table._tableTextDefColour);
     this.text.attr("font-family", Table._tableTextDefFontFamily);
@@ -65,7 +83,7 @@ var Table = Class.extend({
       this.rect.attr("width", this.text.getBBox().width + 4*Table._tableTextXOffset + Table._rightOffset);
       this.headerRect.attr("width", this.rect.attr("width") - 10);
     }
-    
+
     this.drag(this._drag, this._dragstart, this._dragstop);
 
 
@@ -93,11 +111,11 @@ var Table = Class.extend({
       dialog.data("params", params);
       dialog.data("id", table.__id__);
     }
-    
+
     this.headerRect.dblclick(function(){generatePropertiesDialog(this.parent)});
     this.rect.dblclick(function(){generatePropertiesDialog(this.parent)});
     this.text.dblclick(function(){generatePropertiesDialog(this.parent)});
-    
+
     this.rect.hover(this.hoverCursor, this.autoCursor)
     this.headerRect.hover(this.hoverCursor, this.autoCursor)
     this.text.hover(this.hoverCursor, this.autoCursor)
@@ -113,7 +131,7 @@ var Table = Class.extend({
       this.parent.relations[i].remove();
       gRelations.splice(gRelations.indexOf(this.parent.relations[i], 1));
     }
-    
+
     this.remove();
     tables.splice(tables.indexOf(this), 1);
   },
@@ -169,15 +187,15 @@ var Table = Class.extend({
   addComponent: function(component, name){
     component.title = name;
     var titlebbox = this.text.getBBox();
-    
+
     var text = canvas.text(
-        this.rect.attr("x") + Table._componentXOffset*2, 
+        this.rect.attr("x") + Table._componentXOffset*2,
         0, name + " : " + component.getName() );
     text.attr("fill", Table._componentDefColour);
     text.attr("font-family", Table._componentDefFontFamily);
     text.attr("font-size", Table._componentDefFontSize);
     text.attr("text-anchor", "start");
-    
+
     this.texts.push(text);
     var bbox = this.texts[this.texts.length-1].getBBox();
     var y = titlebbox.y + titlebbox.height  + this.texts.length * bbox.height;
@@ -194,7 +212,7 @@ var Table = Class.extend({
         this.attr("fill", Table._headerRectDefBackground);
       },
       function() {
-        this.attr("cursor", "auto"); 
+        this.attr("cursor", "auto");
         this.attr("font-size", Table._componentDefFontSize);
         this.attr("font-weight", "normal");
         this.attr("fill", "black");
@@ -209,14 +227,14 @@ var Table = Class.extend({
       delete this.text;
       this.remove();
     });
-    
+
     text.component = component;
     text.parent = this;
-    
+
     text.click(function(){
       activeComp = this.component;
 	    var el = this.component.getElement();
-	
+
 	    dialog.empty();
 	    dialog.dialog("option", "title", "Component params: " + this.component.title);
 	    dialog.dialog("option", "buttons", {});
@@ -245,11 +263,11 @@ c(params[i].selectedValue)
 	    dialog.dialog("open");
     });
     text.hover(this.hoverCursor, this.autoCursor)
-    
+
     this.resizeToComp(text);
   },
   resizeToComp: function(text) {
-    if(this.texts.length == 0) 
+    if(this.texts.length == 0)
       var bbox = {width: 0, height: 0};
     else
       var bbox = this.texts[this.texts.length-1].getBBox();
@@ -269,9 +287,9 @@ c(params[i].selectedValue)
       this.headerRect.attr("width", this.rect.getBBox().width - 10);
     }
 
-    this.positionCloseX();  
+    this.positionCloseX();
 
-    if (this.texts.length == 0) 
+    if (this.texts.length == 0)
       return;
 
     var titlebbox = this.text.getBBox();
@@ -279,11 +297,11 @@ c(params[i].selectedValue)
     var y = titlebbox.y + titlebbox.height ;
     for (var i = 0; i < this.texts.length; i++) {
       this.texts[i].attr("x", this.rect.attr("x") + Table._componentXOffset*2);
-      y +=  bbox.height ; 
+      y +=  bbox.height ;
       this.texts[i].attr("y", y);
       this.texts[i].close.attr({x: this.texts[i].attr("x")-7, y: this.texts[i].attr("y") })
     }
-    
+
     for (var i = 0; i < this.relations.length; i++) {
       this.relations[i].reposition();
     }
@@ -310,7 +328,7 @@ c(params[i].selectedValue)
     this.text.attr("x", x + 5 + 1 + Table._tableTextXOffset);
     this.text.attr("y", y + 5 + 1 + this.text.getBBox().height + Table._tableTextYOffset);
 
-    if (this.texts.length == 0) 
+    if (this.texts.length == 0)
       return;
 
     var titlebbox = this.text.getBBox();
@@ -318,7 +336,7 @@ c(params[i].selectedValue)
     var y = titlebbox.y + titlebbox.height ;
     for (var i = 0; i < this.texts.length; i++) {
       this.texts[i].attr("x", this.rect.attr("x") + Table._componentXOffset*2);
-      y +=  bbox.height ; 
+      y +=  bbox.height ;
       this.texts[i].attr("y", y);
       this.texts[i].close.attr({x: this.texts[i].attr("x")-7, y: this.texts[i].attr("y") })
     }
@@ -417,16 +435,16 @@ Table.fromJSON = function(obj) {
   t.__id__ = obj.id;
   t.setPosition(obj.x, obj.y);
   for (var j = 0; j < obj.params.length; j++) {
-    if (obj.params[j].type == "list") 
+    if (obj.params[j].type == "list")
       t.params[j].setValue(obj.params[j].selectedValue);
-    else 
+    else
       t.params[j].setValue(obj.params[j].value);
   }
 
   for (var i = 0; i < obj.components.length; i++) {
     t.addComponent(CF(obj.components[i]), obj.components[i].title);
     for (var j = 0; j < obj.components[i].params.length; j++) {
-      if (obj.components[i].params[j].type == "list" ) 
+      if (obj.components[i].params[j].type == "list" )
         t.texts[i].component.params[j].setValue(obj.components[i].params[j].selectedValue);
       else
         t.texts[i].component.params[j].setValue(obj.components[i].params[j].value);
@@ -435,8 +453,6 @@ Table.fromJSON = function(obj) {
 
   return t;
 }
-
-
 
 Table._tableRectXOffset = 0;
 Table._tableRectYOffset = 10;

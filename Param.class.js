@@ -1,3 +1,21 @@
+/*
+ * EZDesigner - A jQuery & Raphael database designer for EZWebapp
+ * Copyright (C) 2011-2012  EZWebapp.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 var Param = Class.extend({
   init: function(paramDescription) {
     this.__class__ = "Param";
@@ -83,7 +101,7 @@ var ListParam = Param.extend({
     this.val = this.desc.value[0];
   },
   getElement: function() {
-    //if (this.el == null) { 
+    //if (this.el == null) {
   	  var s = $("<div><b>Param</b> " + this.desc.name + "<select></select></div>");
       s.attr("id", this.__id__);
   	  for (var i = 0; i < this.desc.value.length; i++) {
@@ -127,7 +145,7 @@ var RelationshipParam = Param.extend({
     this.__class__ = "RelationshipParam";
     this.val = this.desc.value[0];
   },
-  getElement: function() {  
+  getElement: function() {
 	  var s = $("<div><b>Param</b> " + this.desc.name + "<select></select></div>");
     s.attr("id", this.__id__);
 	  for (var i = 0; i < this.desc.value.length; i++) {

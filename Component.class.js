@@ -1,7 +1,25 @@
+/*
+ * EZDesigner - A jQuery & Raphael database designer for EZWebapp
+ * Copyright (C) 2011-2012  EZWebapp.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 var Component = Class.extend({
   init: function(componentDescription) {
     this.__class__ = "Component";
-    
+
     this.desc = {name: componentDescription.name, params: []};
     for (var i = 0; i < componentDescription.params.length; i++) {
       var paramDescription = componentDescription.params[i];
@@ -17,7 +35,7 @@ var Component = Class.extend({
       }
       this.desc.params.push(tmpdesc);
     }
-    
+
     this.params = [];
     for (var i = 0; i < this.desc.params.length; i++) {
     	this.params.push(PF(this.desc.params[i]));

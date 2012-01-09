@@ -1,3 +1,21 @@
+/*
+ * EZDesigner - A jQuery & Raphael database designer for EZWebapp
+ * Copyright (C) 2011-2012  EZWebapp.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 var activeTable;
 var activeComp;
 var canvas;
@@ -18,7 +36,6 @@ var zoom = 1;
 
 var interactivityMode = "normal"; // "relations"
 
-
     $(document).ready(function(){
       var guiheight = $("#ezd-gui").height();
 
@@ -27,7 +44,7 @@ var interactivityMode = "normal"; // "relations"
         start: function(){
           panx = curorig_x;
           pany = curorig_y;
-        }, 
+        },
         drag: function(e, ui) {
           if (isdragging) return;
           var dx = ui.position.left - ui.originalPosition.left;
@@ -39,7 +56,7 @@ var interactivityMode = "normal"; // "relations"
         stop: function(){
           CalcMidPoint();
           activeTable = null;
-        }, 
+        },
 
       });
 
@@ -75,7 +92,7 @@ var interactivityMode = "normal"; // "relations"
         start:function(){},
         stop:function(){},
         slide: function(event, ui) {
-          if ($(this).slider("option","value") > ui.value) 
+          if ($(this).slider("option","value") > ui.value)
             ZoomOut();
           else
             ZoomIn();
@@ -91,7 +108,7 @@ var interactivityMode = "normal"; // "relations"
 
       $(".todrop").draggable({
         revert: true,
-        helper: "clone", 
+        helper: "clone",
         opacity: 0.5
       });
       $("#ezd-graph-container").droppable({
@@ -111,7 +128,6 @@ var interactivityMode = "normal"; // "relations"
   	            activeComp = compObject;
   	            var table = tables[i];
   	            activeTable = table;
-  	            
   	            dialog.empty();
   	            dialog.dialog("open");
   	            dialog.dialog("option", "title", "Add new component");
@@ -124,7 +140,6 @@ var interactivityMode = "normal"; // "relations"
           }
         }
       });
-
 
       $("#ezd-load").click(function(){
 	$.ajax({ type: 'POST', url: '/webapp/loadSchema', data: ({ id: $(this).attr('rel') }), success: load });
@@ -147,7 +162,6 @@ var interactivityMode = "normal"; // "relations"
       //$("#ezd-json").html(JSON.stringify(loadjson, null, 2));
     });
 
-
     function load(json) {
       kkk = 0;
       canvas.clear();
@@ -163,7 +177,7 @@ var interactivityMode = "normal"; // "relations"
         r.reposition();
         r.repositionTexts();
         for (var j = 0; j < json.relations[i].params.length; j++) {
-          if (json.relations[i].params[j].type == "list" || json.relations[i].params[j].type == "relationship") 
+          if (json.relations[i].params[j].type == "list" || json.relations[i].params[j].type == "relationship")
             r.params[j].setValue(json.relations[i].params[j].selectedValue);
           else
             r.params[j].setValue(json.relations[i].params[j].value);
@@ -222,12 +236,6 @@ var interactivityMode = "normal"; // "relations"
       }
     }
 
-
-
-
-
-
-
     var isdragging = false;
     var panx = pany = 0;
     var difx = dify = 0;
@@ -265,4 +273,3 @@ var interactivityMode = "normal"; // "relations"
       canvas.setViewBox(curorig_x, curorig_y, curorig_width, curorig_height);
       CalcMidPoint();
     }
-

@@ -1,3 +1,21 @@
+/*
+ * EZDesigner - A jQuery & Raphael database designer for EZWebapp
+ * Copyright (C) 2011-2012  EZWebapp.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 var Relation = Class.extend({
   init: function(relationDescription, t1, t2) {
     gRelations.push(this);
@@ -14,7 +32,6 @@ var Relation = Class.extend({
     }
     this.params[0].relation = this;
 
-    
     this.srcText = canvas.text(0, 0, this.params[0].getSrcText());
     this.dstText = canvas.text(0, 0, this.params[0].getDstText());
     this.srcTextBackground = canvas.rect(0, 0, 0, 0);
@@ -26,46 +43,46 @@ var Relation = Class.extend({
     this.srcText.attr("font-size", Relation._srcFontSize);
     this.srcText.attr("font-weight", Relation._srcFontWeight);
     this.srcText.attr("color", Relation._srcFontColour);
-    
+
     this.dstTextBackground.attr("fill", Relation._dstBackground);
     this.dstTextBackground.attr("stroke-width", Relation._dstStrokeWidth);
     this.dstText.attr("font-family", Relation._dstFontFamily);
     this.dstText.attr("font-size", Relation._dstFontSize);
     this.dstText.attr("font-weight", Relation._dstFontWeight);
     this.dstText.attr("color", Relation._dstFontColour);
-    
+
     this.line.attr({"stroke": Relation._lineStroke, "stroke-width": Relation._lineStrokeWidth});
 
     this.line.hover(function(){
       this.attr({"stroke-width": Relation._lineStrokeWidthHover});
       this.attr({"stroke": Relation._lineStrokeHover});
-      
+
       this.parent.srcTextBackground.attr("fill", Relation._srcBackgroundHover);
       this.parent.srcTextBackground.attr("stroke-width", Relation._srcStrokeWidthHover);
       this.parent.srcText.attr("font-family", Relation._srcFontFamilyHover);
       this.parent.srcText.attr("font-size", Relation._srcFontSizeHover);
       this.parent.srcText.attr("font-weight", Relation._srcFontWeightHover);
       this.parent.srcText.attr("color", Relation._srcFontColourHover);
-      
+
       this.parent.dstTextBackground.attr("fill", Relation._dstBackgroundHover);
       this.parent.dstTextBackground.attr("stroke-width", Relation._dstStrokeWidthHover);
       this.parent.dstText.attr("font-family", Relation._dstFontFamilyHover);
       this.parent.dstText.attr("font-size", Relation._dstFontSizeHover);
       this.parent.dstText.attr("font-weight", Relation._dstFontWeightHover);
       this.parent.dstText.attr("color", Relation._dstFontColourHover);
-      
-      }, 
+
+      },
       function() {
         this.attr({"stroke-width": Relation._lineStrokeWidth});
         this.attr({"stroke": Relation._lineStroke});
-        
+
         this.parent.srcTextBackground.attr("fill", Relation._srcBackground);
         this.parent.srcTextBackground.attr("stroke-width", Relation._srcStrokeWidth);
         this.parent.srcText.attr("font-family", Relation._srcFontFamily);
         this.parent.srcText.attr("font-size", Relation._srcFontSize);
         this.parent.srcText.attr("font-weight", Relation._srcFontWeight);
         this.parent.srcText.attr("color", Relation._srcFontColour);
-        
+
         this.parent.dstTextBackground.attr("fill", Relation._dstBackground);
         this.parent.dstTextBackground.attr("stroke-width", Relation._dstStrokeWidth);
         this.parent.dstText.attr("font-family", Relation._dstFontFamily);
@@ -110,7 +127,7 @@ var Relation = Class.extend({
     var rh1 = this.src.rect.attr("height");
     var rw2 = this.src.rect.attr("width");
     var rh2 = this.src.rect.attr("height");
-    
+
     if (ry1 + rh1 < ry2) {
       y1 = ry1 + rh1;
       y2 = ry2;
@@ -139,7 +156,7 @@ var Relation = Class.extend({
       x1 = rx1 + rw1/2;
       x2 = rx2 + rw2/2;
     }
-    
+
     this.line.attr("path", "M" + x1 + "," + y1 + "L" + x2 + "," + y2);
   },
   repositionTexts: function() {
@@ -200,9 +217,6 @@ var Relation = Class.extend({
     return obj;
   }
 });
-
-
-
 
 Relation._srcBackground = "white";
 Relation._srcStrokeWidth = 1;
