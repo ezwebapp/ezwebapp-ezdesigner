@@ -48,7 +48,7 @@ var Table = Class.extend({
           activeTable.rect.attr("stroke-width", 3);
         }
         else {
-          var r = new Relation(relations[0], table, activeTable);
+          var r = new Relation(relations[0], activeTable, table);
           toggleMode();
           r.reposition();
           r.repositionTexts();
@@ -89,9 +89,13 @@ var Table = Class.extend({
 
     var generatePropertiesDialog = function(table) {
       var el = table.getParamsElement();
+      activeTable = table;
       dialog.empty();
       dialog.dialog("option", "title", "Table params");
-      dialog.dialog("option", "buttons", {OK: function(){dialog.dialog("close")}, Cancel: function() {
+      dialog.dialog("option", "buttons", {OK: function(){
+          activeTable.resizeToComp();
+          dialog.dialog("close");
+        }, Cancel: function() {
         var id = dialog.data("id");
         var params = dialog.data("params");
         var table = getTable(id);
@@ -112,9 +116,9 @@ var Table = Class.extend({
       dialog.data("id", table.__id__);
     }
 
-    this.headerRect.dblclick(function(){generatePropertiesDialog(this.parent)});
-    this.rect.dblclick(function(){generatePropertiesDialog(this.parent)});
-    this.text.dblclick(function(){generatePropertiesDialog(this.parent)});
+    this.headerRect.dblclick(function(e){generatePropertiesDialog(this.parent); e.stopPropagation();});
+    this.rect.dblclick(function(e){generatePropertiesDialog(this.parent); e.stopPropagation();});
+    this.text.dblclick(function(e){generatePropertiesDialog(this.parent); e.stopPropagation();});
 
     this.rect.hover(this.hoverCursor, this.autoCursor)
     this.headerRect.hover(this.hoverCursor, this.autoCursor)
@@ -125,7 +129,12 @@ var Table = Class.extend({
     this.parent.headerRect.remove();
     this.parent.text.remove();
     for (var i = 0; i < this.parent.texts.length; i++) {
-      this.parent.texts[i].remove();
+      var t = this.parent.texts[i];
+      this.parent.texts.splice(this.parent.texts.indexOf(this.text), 1);
+      t.close.remove();
+      t.remove();
+      t.close = null;
+      delete t;
     }
     for (var i = 0; i < this.parent.relations.length; i++) {
       this.parent.relations[i].remove();
@@ -145,7 +154,8 @@ var Table = Class.extend({
     this.attr("cursor", "auto");
     if (interactivityMode == "relations" && (activeTable != null || typeof activeTable != "undefined")) {
       this.parent.rect.attr("stroke-width", 1);
-      activeTable.rect.attr("stroke-width", 3);
+      if (activeTable != null)
+        activeTable.rect.attr("stroke-width", 3);
     }
   },
   toJSON: function(){
@@ -165,14 +175,14 @@ var Table = Class.extend({
   },
   getTitle: function(){
     for (var i = 0; i < tableParams.length; i++) {
-      if ("title" == tableParams[i].name)
+      if ("Title" == tableParams[i].name)
         return tableParams[i].value;
     }
     return null;
   },
   setTitle: function(title){
     for (var i = 0; i < tableParams.length; i++) {
-      if ("title" == tableParams[i].name)
+      if ("Title" == tableParams[i].name)
         tableParams[i].setValue(title);
     }
     return null;
@@ -184,13 +194,13 @@ var Table = Class.extend({
     }
     return d;
   },
-  addComponent: function(component, name){
-    component.title = name;
+  addComponent: function(component){
+    component.title = component.getType();
     var titlebbox = this.text.getBBox();
 
     var text = canvas.text(
-        this.rect.attr("x") + Table._componentXOffset*2,
-        0, name + " : " + component.getName() );
+      this.rect.attr("x") + Table._componentXOffset*2,
+      0, component.getName() + " : " + component.getType() );
     text.attr("fill", Table._componentDefColour);
     text.attr("font-family", Table._componentDefFontFamily);
     text.attr("font-size", Table._componentDefFontSize);
@@ -200,7 +210,9 @@ var Table = Class.extend({
     var bbox = this.texts[this.texts.length-1].getBBox();
     var y = titlebbox.y + titlebbox.height  + this.texts.length * bbox.height;
     text.attr("y", y);
-    var close = canvas.text(text.attr("x")-7, text.attr("y"), "x").attr("font-size", Table._componentDefFontSize-3);
+    var close = canvas
+      .text(text.attr("x")-7, text.attr("y"), "x")
+      .attr("font-size", Table._componentDefFontSize-3);
     // double reference, attention when removing
     close.text = text;
     text.close = close;
@@ -229,20 +241,27 @@ var Table = Class.extend({
     });
 
     text.component = component;
+    component.text = text;
     text.parent = this;
 
-    text.click(function(){
+    text.click(function(e){
+      activeTable = this.parent;
       activeComp = this.component;
 	    var el = this.component.getElement();
 
 	    dialog.empty();
 	    dialog.dialog("option", "title", "Component params: " + this.component.title);
 	    dialog.dialog("option", "buttons", {});
-      dialog.dialog("option", "buttons", {OK: function(){dialog.dialog("close")}, Cancel: function() {
+      dialog.dialog("option", "buttons", {OK: function(){
+          var name = dialog.find("input").eq(0).val();
+          activeComp.params[0].setValue(name);
+          activeComp.text.attr("text", name + " : " + activeComp.getType());
+          activeTable.resizeToComp(activeComp.text);
+          dialog.dialog("close");
+        }, Cancel: function() {
         var id = dialog.data("id");
         var params = dialog.data("params");
         for (var i = 0; i < activeComp.params.length; i++) {
-c(params[i].selectedValue)
           if(params[i].type == "list")
             activeComp.params[i].setValue(params[i].selectedValue);
           else
@@ -261,6 +280,7 @@ c(params[i].selectedValue)
       dialog.data("id", activeComp.__id__);
 
 	    dialog.dialog("open");
+      e.stopPropagation();
     });
     text.hover(this.hoverCursor, this.autoCursor)
 
@@ -271,15 +291,20 @@ c(params[i].selectedValue)
       var bbox = {width: 0, height: 0};
     else
       var bbox = this.texts[this.texts.length-1].getBBox();
-
+ 
     var titlebbox = this.text.getBBox();
-    var hh = Table._componentYOffset + bbox.height * this.texts.length + titlebbox.height + Table._tableTextYOffset*3;
+    var hh = Table._componentYOffset + bbox.height * this.texts.length 
+      + titlebbox.height + Table._tableTextYOffset*3;
     if (hh < Table._tableRectDefHeight)
       hh = Table._tableRectDefHeight;
     this.rect.attr("height", hh);
 
-    if (4*Table._tableTextXOffset + text.getBBox().width > this.rect.getBBox().width) {
-      this.rect.attr("width", text.getBBox().width + 4*Table._tableTextXOffset);
+    if (text != null)
+      var bbw = text.getBBox().width;
+    else 
+      var bbw = titlebbox.width + Table._tableTextXOffset;
+    if (6*Table._tableTextXOffset + bbw > this.rect.getBBox().width) {
+      this.rect.attr("width", bbw + 6*Table._tableTextXOffset);
       this.headerRect.attr("width", this.rect.attr("width") - 10);
     }
     else {

@@ -35,6 +35,8 @@ var Component = Class.extend({
       }
       this.desc.params.push(tmpdesc);
     }
+    // ovo verovatno ne treba ovde jer ce se duplirati kod deserijalizacije
+    this.desc.params.splice(0, 0, { name: "name", type: "string", value: "Untitled component"});
 
     this.params = [];
     for (var i = 0; i < this.desc.params.length; i++) {
@@ -52,12 +54,13 @@ var Component = Class.extend({
     }
     return this.el;
   },
-  getName: function() {return this.desc.name;},
-  setName: function(name) {this.desc.name = name;},
+  getType: function() {return this.desc.name;},
+  getName: function() {return this.params[0].getValue();},
+  setName: function(name) {this.params[0].setValue(name);},
   toJSON: function() {
     var obj = {};
     obj.id = this.__id__;
-    obj.name = this.getName();
+    obj.name = this.getType();
     obj.title = this.title;
     obj.params = [];
     for (var i = 0; i < this.params.length; i++) {

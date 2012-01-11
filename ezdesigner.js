@@ -128,13 +128,19 @@ var interactivityMode = "normal"; // "relations"
   	            activeComp = compObject;
   	            var table = tables[i];
   	            activeTable = table;
-  	            dialog.empty();
-  	            dialog.dialog("open");
-  	            dialog.dialog("option", "title", "Add new component");
-  	            dialog.dialog("option", "buttons", {OK: addComp, Cancel: function() {dialog.dialog("close")}});
-  	            dialog.append("<span>Component name: <input id='ezd-table-name'></span>");
+                
+                dialog.empty();
+                dialog.dialog("option", "title", "Component params: " + activeComp.title);
+                dialog.dialog("option", "buttons", {});
+                dialog.dialog("option", "buttons", {OK: function() {
+                  activeTable.addComponent(activeComp);
+                  activeTable = null;
+                  activeComp = null;
+                  dialog.dialog("close");
+                }, Cancel: function(){dialog.dialog("close")}});
+                dialog.append(activeComp.getElement());
                 dialog.find("input").eq(0).focus();
-
+  	            dialog.dialog("open");
               }
             }
           }
