@@ -133,6 +133,8 @@ var interactivityMode = "normal"; // "relations"
                 dialog.dialog("option", "title", "Component params: " + activeComp.title);
                 dialog.dialog("option", "buttons", {});
                 dialog.dialog("option", "buttons", {OK: function() {
+                  if (activeTable == null || typeof activetable == "undefined")
+                    return;
                   activeTable.addComponent(activeComp);
                   activeTable = null;
                   activeComp = null;
