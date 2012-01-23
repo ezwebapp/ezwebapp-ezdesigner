@@ -59,7 +59,7 @@ var StringParam = Param.extend({
   },
   getElement: function() {
     if (this.el == null) {
-      this.el = $("<div><b>Param</b> " + this.getName() + ": <input value='" + this.getValue() + "'></div>");
+      this.el = $("<div>" + this.getName() + ": <input value='" + this.getValue() + "'></div>");
       this.el.attr("id", this.__id__);
       this.el.find("input").change(function(){
         var id = $(this).closest("div").attr("id");
@@ -80,7 +80,7 @@ var NumberParam = Param.extend({
   },
   getElement: function() {
     if (this.el == null) {
-      this.el = $("<div><b>Param</b> " + this.getName() + ": <input value='" + this.getValue() + "'></div>")
+      this.el = $("<div>" + this.getName() + ": <input value='" + this.getValue() + "'></div>")
       this.el.attr("id", this.__id__);
       this.el.find("input").change(function(){
         var id = $(this).closest("div").attr("id");
@@ -102,7 +102,7 @@ var ListParam = Param.extend({
   },
   getElement: function() {
     //if (this.el == null) {
-  	  var s = $("<div><b>Param</b> " + this.desc.name + "<select></select></div>");
+  	  var s = $("<div>" + this.desc.name + ": <select></select></div>");
       s.attr("id", this.__id__);
   	  for (var i = 0; i < this.desc.value.length; i++) {
   		  s.find("select").append($("<option>" + this.desc.value[i] + "</option>"));
@@ -146,7 +146,7 @@ var RelationshipParam = Param.extend({
     this.val = this.desc.value[0];
   },
   getElement: function() {
-	  var s = $("<div><b>Param</b> " + this.desc.name + "<select></select></div>");
+	  var s = $("<div>" + this.desc.name + ": <select></select></div>");
     s.attr("id", this.__id__);
 	  for (var i = 0; i < this.desc.value.length; i++) {
 		  s.find("select").append($("<option>" + this.desc.value[i] + "</option>"));

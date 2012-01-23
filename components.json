@@ -18,44 +18,54 @@
 
 var components = [
 	{ url: "/images/string.png", name: "string", params: [
+		{ name: "description", type: "string", value: "" },
 		{ name: "isName", type: "list", value: ["true", "false"] },
 		{ name: "nameOrder", type: "number", value: 1 },
 		{ name: "isUnique", type: "list", value: ["true", "false"] }
 	] },
 	{ url: "/images/boolean.png", name: "bool", params: [
+		{ name: "description", type: "string", value: "" },
 		{ name: "values", type: "list", value: ["true", "false"] }
 	] },
 	{ url: "/images/date.png", name: "date", params: [
+		{ name: "description", type: "string", value: "" },
 		{ name: "isName", type: "list", value: ["true", "false"] },
 		{ name: "nameOrder", type: "number", value: 1 },
 		{ name: "date type", type: "list", value: ["date", "date+time"] }
 	] },
 	{ url: "/images/time.png", name: "time", params: [
+		{ name: "description", type: "string", value: "" },
 		{ name: "isName", type: "list", value: ["true", "false"] },
 		{ name: "nameOrder", type: "number", value: 1 },
 		{ name: "time type", type: "list", value: ["time", "date+time"] }
 	] },
 	{ url: "/images/float.png", name: "float", params: [
+		{ name: "description", type: "string", value: "" },
 		{ name: "isName", type: "list", value: ["true", "false"] },
 		{ name: "nameOrder", type: "number", value: 1 }
 	] },
 	{ url: "/images/text.png", name: "text", params: [
+		{ name: "description", type: "string", value: "" },
 		{ name: "isName", type: "list", value: ["true", "false"] },
 		{ name: "nameOrder", type: "number", value: 1 },
 		{ name: "isUnique", type: "list", value: ["true", "false"] }
 	] },
 	{ url: "/images/integer.png", name: "integer", params: [
+		{ name: "description", type: "string", value: "" },
 		{ name: "isName", type: "list", value: ["true", "false"] },
 		{ name: "nameOrder", type: "number", value: 1 },
 		{ name: "isUnique", type: "list", value: ["true", "false"] }
 	] },
 	{ url: "/images/image.png", name: "image", params: [
+		{ name: "description", type: "string", value: "" }
 	] },
 	{ url: "/images/currency.png", name: "currency", params: [
+		{ name: "description", type: "string", value: "" },
 		{ name: "isName", type: "list", value: ["true", "false"] },
 		{ name: "nameOrder", type: "number", value: 1 }
 	] },
 	{ url: "/images/choice.png", name: "choice", params: [
+		{ name: "description", type: "string", value: "" },
 		{ name: "isName", type: "list", value: ["true", "false"] },
 		{ name: "nameOrder", type: "number", value: 1 },
 		{ name: "values", type: "string", value: "Enter choices separated by commas"}
@@ -73,4 +83,4 @@ var tableParams = [
   { name: "nameSeparator", type: "string", value: " " }
 ];
 
-var relations = [{ name: "type", type: "relationship", value: ["1:1", "1:n", "n:1", "n:n"] }]
+var relations = [{ name: "Type", type: "relationship", value: ["1:1", "1:n", "n:1", "n:n"] }]
