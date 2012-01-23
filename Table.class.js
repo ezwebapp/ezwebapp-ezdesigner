@@ -128,7 +128,7 @@ var Table = Class.extend({
     this.parent.rect.remove();
     this.parent.headerRect.remove();
     this.parent.text.remove();
-    for (var i = 0; i < this.parent.texts.length; i++) {
+    for (var i = this.parent.texts.length-1; i >= 0; i--) {
       var t = this.parent.texts[i];
       this.parent.texts.splice(this.parent.texts.indexOf(this.text), 1);
       t.close.remove();
@@ -244,7 +244,7 @@ var Table = Class.extend({
     component.text = text;
     text.parent = this;
 
-    text.click(function(e){
+    text.dblclick(function(e){
       activeTable = this.parent;
       activeComp = this.component;
 	    var el = this.component.getElement();

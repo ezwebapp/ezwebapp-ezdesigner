@@ -58,7 +58,7 @@ var StringParam = Param.extend({
     this.__class__ = "StringParam";
   },
   getElement: function() {
-    if (this.el == null) {
+//    if (this.el == null) {
       this.el = $("<div>" + this.getName() + ": <input value='" + this.getValue() + "'></div>");
       this.el.attr("id", this.__id__);
       this.el.find("input").change(function(){
@@ -66,7 +66,7 @@ var StringParam = Param.extend({
         var obj =  __objects[id];
         obj.setValue($(this).val());
       });
-    }
+//    }
     this.el.find("input").val(this.getValue());
     return this.el;
   },
@@ -79,7 +79,7 @@ var NumberParam = Param.extend({
     this.__class__ = "NumberParam";
   },
   getElement: function() {
-    if (this.el == null) {
+//    if (this.el == null) {
       this.el = $("<div>" + this.getName() + ": <input value='" + this.getValue() + "'></div>")
       this.el.attr("id", this.__id__);
       this.el.find("input").change(function(){
@@ -87,7 +87,7 @@ var NumberParam = Param.extend({
         var obj =  __objects[id];
         obj.setValue($(this).val());
       });
-    }
+//    }
     this.el.find("input").val(this.getValue());
     return this.el;
   },
